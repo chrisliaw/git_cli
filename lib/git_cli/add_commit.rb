@@ -81,8 +81,7 @@ module GitCli
       check_vcs
 
       # have to escape the message for command line purposes
-      #msg = message.gsub("'","\\\\'").gsub("\"","\\\'").gsub("\\","\\\\")
-      msg = escape_string(message)
+      msg = message.gsub("\"","\\\"").gsub("\\","\\\\")
 
       cmd = []
       cmd << "cd"
@@ -107,8 +106,7 @@ module GitCli
       check_vcs
       
       # have to escape the message for command line purposes
-      #msg = message.gsub("'","\\\\'").gsub("\"","\\\'").gsub("\\","\\\\")
-      msg = escape_string(message)
+      msg = message.gsub("\"","\\\"").gsub("\\","\\\\")
 
       cmd = []
       cmd << "cd"
@@ -127,12 +125,6 @@ module GitCli
         [st.success?, res.strip]
       end
      
-    end
-
-    def escape_string(msg)
-      if not_empty?(msg)
-        Regexp.escape(msg)
-      end
     end
 
   end
