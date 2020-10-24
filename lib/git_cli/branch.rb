@@ -141,13 +141,15 @@ module GitCli
         end
       end
 
-    end
+    end # switch_branch
 
     def create_branch(branch)
 
       raise_if_empty(branch, "Branch name cannot be empty", GitCliException)
 
       check_vcs
+
+      branch = branch.gsub(" ","_")
 
       cmd = []
       cmd << "cd"
@@ -168,7 +170,88 @@ module GitCli
         end
       end
       
-    end
+    end # create_branch
+
+    def download_all_remote_branches_name
+
+      check_vcs
+      check_repos
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "fetch -all"
+
+      cmdln = cmd.join(" ")
+      log_debug "Download remote branches name : #{cmdln}"
+      res = os_exec(cmdln) do |st, res|
+        
+        if st.success?
+          [true, res.strip]
+        else
+          [false, res]
+        end
+      end
+      
+    end # download_all_remote_branches_name
+    alias :sync_all_remote_branches_name :download_all_remote_branches_name
+
+    def merge_branch(branch)
+      raise_if_empty(branch, "Branch name cannot be empty", GitCliException)
+
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "merge"
+      cmd << branch
+
+      cmdln = cmd.join(" ")
+      log_debug "Merge current branch with branch '#{branch}' : #{cmdln}"
+      res = os_exec(cmdln) do |st, res|
+        
+        if st.success?
+          [true, res.strip]
+        else
+          [false, res]
+        end
+      end
+     
+    end # merge_branch
+
+    def delete_branch(branch)
+
+      raise_if_empty(branch, "Branch name cannot be empty", GitCliException)
+
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "branch"
+      cmd << "-d"
+      cmd << branch
+
+      cmdln = cmd.join(" ")
+      log_debug "Delete branch '#{branch}' : #{cmdln}"
+      res = os_exec(cmdln) do |st, res|
+        
+        if st.success?
+          [true, res.strip]
+        else
+          [false, res]
+        end
+
+      end
+      
+    end # delete_branch
 
   end
 end
