@@ -113,7 +113,7 @@ module GitCli
         cmd << "-a"
         cmd << tag
         cmd << "-m"
-        cmd << msg2
+        cmd << "\"#{msg2}\""
 
       else
         cmd << tag
