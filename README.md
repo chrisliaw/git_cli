@@ -4,6 +4,8 @@ This project is aimed to create the interfacing to GIT via the Command Line Inte
 
 Hence the interfacing with the CLI seems the better way to do that.
 
+This codes are tested using git version 2.25.1, Linux x86\_64 
+
 ## Installation
 
 Add this line to your application's Gemfile:
