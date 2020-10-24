@@ -197,7 +197,7 @@ module GitCli
       end
 
       cmdln = cmd.join(" ")
-      log_debug "Stash remove from list (all uncommitted changes lost permanantly): #{cmdln}"
+      log_debug "Stash #{is_empty?(id) ? "remove" : "'#{id}' is being removed"} from list (all uncommitted changes lost permanantly): #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         [st.success?, res]
       end
