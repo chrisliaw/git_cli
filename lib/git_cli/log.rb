@@ -47,7 +47,34 @@ module GitCli
         end
       end
        
-    end
+    end # log
+
+    def show_log(cid)
+      
+      check_vcs
+
+      raise_if_empty(cid, "Commit ID must be present for detail log discovery", GitCliException)
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "show"
+      cmd << cid
+
+      cmdln = cmd.join(" ")
+      log_debug "Show : #{cmdln}"
+
+      res = os_exec(cmdln) do |st, res|
+        
+        if st.success?
+          [true, res.strip!]
+        else
+          [false, res]
+        end
+      end
+
+    end # show
 
   end
 end
