@@ -15,6 +15,7 @@ require_relative "git_cli/ignore"
 require_relative "git_cli/log"
 require_relative "git_cli/tags"
 require_relative "git_cli/repos"
+require_relative "git_cli/stash"
 
 
 module GitCli
@@ -98,6 +99,7 @@ module GitCli
     include GitCli::Log
     include GitCli::Tags
     include GitCli::Repos
+    include GitCli::Stash
 
     attr_accessor :repos
     def initialize(vcs, path)
@@ -183,9 +185,11 @@ module GitCli
     
     attr_reader :sslVerify
     attr_reader :name, :url
-    def initialize(name, url)
+    #attr_accessor :branches
+    def initialize(name, url) #, branches = [])
       @name = name
       @url = url
+      #@branches = branches
       @sslVerify = true  
     end
 
