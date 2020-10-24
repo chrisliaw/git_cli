@@ -132,5 +132,47 @@ module GitCli
      
     end # deleted_files
 
+    def reset_file_changes(path)
+
+      raise_if_empty(path, "Path cannot be empty for reset file changes operation", GitCliException)
+
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "checkout --"
+      cmd << path
+
+      cmdln = cmd.join(" ")
+      log_debug "Reset file changes local changes (given file permanent) : #{cmdln}"
+      res = os_exec(cmdln) do |st, res|
+        [st.success?, res]
+      end
+      
+    end # reset file changes
+
+    def reset_all_changes
+
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "reset --hard"
+
+      cmdln = cmd.join(" ")
+      log_debug "Reset all local changes (permanent) : #{cmdln}"
+      res = os_exec(cmdln) do |st, res|
+        [st.success?, res]
+      end
+      
+    end # reset all changes
+
+
   end
 end
