@@ -7,6 +7,8 @@ module GitCli
       with_ignore_file do |f|
         f.puts val
       end 
+      log_debug ".gitignore file updated with line '#{val}'"
+      [true,".gitignore file updated"]
     end
 
     def ignore_rules
@@ -25,6 +27,19 @@ module GitCli
       else
         ""
       end
+    end
+
+    def update_ignore_rules(rules)
+      st, root = workspace_root
+      root.strip!
+      if st
+        rulesFile = File.join(root,".gitignore")
+        File.open(rulesFile,"w") do |f|
+          f.write rules
+        end
+      end
+      log_debug ".gitignore files is updated!"
+      [true,".gitignore file is updated"]
     end
 
     private
