@@ -9,6 +9,7 @@ require_relative "git_cli/clone"
 require_relative "git_cli/add_commit"
 require_relative "git_cli/delta"
 require_relative "git_cli/push"
+require_relative "git_cli/pull"
 require_relative "git_cli/branch"
 require_relative "git_cli/diff"
 require_relative "git_cli/ignore"
@@ -93,6 +94,7 @@ module GitCli
     include GitCli::AddCommit
     include GitCli::Delta
     include GitCli::Push
+    include GitCli::Pull
     include GitCli::Branch
     include GitCli::Diff
     include GitCli::Ignore
