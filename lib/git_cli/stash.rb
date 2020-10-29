@@ -135,7 +135,7 @@ module GitCli
 
     end # stash restore
 
-    def stash_to_branch(branch, id = nil)
+    def stash_to_new_branch(branch, id = nil)
 
       raise_if_empty(branch, "Branch name must not be empty for stash to branch operation", GitCliException)
 
