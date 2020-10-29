@@ -285,5 +285,33 @@ module GitCli
       
     end # delete_remote_tag
 
+    def checkout_tag(tag, branch)
+      
+      raise_if_empty(tag, "Tag name cannot be empty", GitCliException)
+
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "checkout"
+      cmd << "tags/#{tag}"
+      cmd << "-b"
+      cmd << branch
+
+      cmdln = cmd.join(" ")
+      log_debug "Checkout tag '#{tag}' into branch '#{branch}': #{cmdln}"
+      res = os_exec(cmdln) do |st, res|
+        if st.success?
+          [true, res.strip!]
+        else
+          [false, res]
+        end
+      end
+      
+    end # checkout_tag
+
   end
 end
