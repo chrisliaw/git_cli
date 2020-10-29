@@ -93,7 +93,7 @@ module GitCli
     #end # tags
 
 
-    def create_tag(tag, msg = nil)
+    def create_tag(tag, msg = nil, branch= nil)
       
       raise_if_empty(tag, "Tag name cannot be empty", GitCliException)
 
@@ -111,12 +111,17 @@ module GitCli
         msg2 = msg.gsub("\"","\\\"").gsub("\\","\\\\")
 
         cmd << "-a"
+        #cmd << "\"#{tag}\""
         cmd << tag
         cmd << "-m"
         cmd << "\"#{msg2}\""
 
       else
         cmd << tag
+      end
+
+      if not_empty?(branch)
+        cmd << branch
       end
 
       cmdln = cmd.join(" ")
