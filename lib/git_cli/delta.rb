@@ -62,6 +62,41 @@ module GitCli
       end
     end # modified files
 
+    def conflicted_files
+      
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "diff --name-only --diff-filter=U"
+
+      cmdln = cmd.join(" ")
+      log_debug "Conflicted files : #{cmdln}"
+      dirs = []
+      files = []
+      res = os_exec(cmdln) do |st, res|
+
+        if st.success?
+          res.each_line do |l|
+            l.chomp!
+            if File.directory?(File.join(@wsPath,l))
+              dirs << l	
+            else
+              files << l
+            end
+          end
+
+          [true, dirs.sort, files.sort]
+        else
+          [false, [], []]
+        end
+
+      end
+    end # conflicted files
+
     def new_files
       
       check_vcs
