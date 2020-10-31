@@ -6,10 +6,10 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Chris Liaw"]
   spec.email         = ["chrisliaw@antrapol.com"]
 
-  spec.summary       = %q{}
-  spec.description   = %q{}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.summary       = %q{GIT command line interface}
+  spec.description   = %q{Interface to GIT via command line interface instead of some sor of library}
+  spec.homepage      = "https://github.com/chrisliaw/git_cli"
+  spec.license       = "GPL-3.0"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
   #spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
@@ -29,5 +29,4 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "tlogger", "~> 0.21"
   spec.add_dependency "toolrack", "~> 0.4.0"
-  spec.add_dependency "version_utils", "~> 0.1.0"
 end
