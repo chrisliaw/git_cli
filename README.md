@@ -11,6 +11,7 @@ This codes are tested using git version 2.25.1, Linux x86\_64
 Add this line to your application's Gemfile:
 
 ```ruby
+gem 'gvcs'
 gem 'git_cli'
 ```
 
@@ -20,11 +21,30 @@ And then execute:
 
 Or install it yourself as:
 
+    $ gem install gvcs
     $ gem install git_cli
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem is intended to be the provider for Gvcs generic API. It is used together with [Gvcs](https://github.com/chrisliaw/gvcs).
+
+Example usage:
+
+```ruby
+require 'gvcs'
+# require git_cli after gvcs because git_cli will initialize the gvcs classes with appropriate methods
+require 'git_cli'
+
+# Loading the provider. 
+# in this case is git_cli
+vcs = Gvcs::Vcs.new
+vcs.init(path) # init workspace at the given path
+
+@ws = Gvcs::Workspace.new(vcs, path)
+# @ws now can invoke all supported git operations 
+
+```
+ 
 
 ## Development
 
@@ -34,13 +54,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/git_cli. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/git_cli/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/chrisliaw/git_cli. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/chrisliaw/git_cli/blob/master/CODE_OF_CONDUCT.md).
 
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
-Everyone interacting in the GitCli project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/git_cli/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the GitCli project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/chrisliaw/git_cli/blob/master/CODE_OF_CONDUCT.md).
