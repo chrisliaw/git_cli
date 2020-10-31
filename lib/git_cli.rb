@@ -17,7 +17,6 @@
 require "git_cli/version"
 
 require 'toolrack'
-require 'version_utils'
 
 require_relative "git_cli/git_core"
 require_relative "git_cli/init"
@@ -82,8 +81,7 @@ module GitCli
       # version check
       vst, tver = version
       if vst
-        st = VersionUtils.new.compare(MIN_GIT_VERSION, tver)
-        if st == -1 # 1st val > 2nd val == current version is smaller than installed
+        if (tver <=> MIN_GIT_VERSION) == -1
           log_warn("Min required version of GIT is #{MIN_GIT_VERSION}. System installed GIT is version #{tver}. The output might not be correct.") 
         end
 
