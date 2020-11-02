@@ -29,4 +29,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "tlogger", "~> 0.21"
   spec.add_dependency "toolrack", "~> 0.4.0"
+  spec.add_dependency "gvcs", "~> 0.1.0"
+  spec.add_dependency "ptools"
 end

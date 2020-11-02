@@ -16,6 +16,7 @@
 
 require "git_cli/version"
 
+require 'gvcs'
 require 'toolrack'
 
 require_relative "git_cli/git_core"
