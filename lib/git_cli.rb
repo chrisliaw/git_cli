@@ -90,7 +90,7 @@ module GitCli
       end
       
     end
-  end
+  end # Gvcs::Vcs
 
   module WsCommon
     def check_vcs
