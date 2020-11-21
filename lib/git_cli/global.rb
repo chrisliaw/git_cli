@@ -24,8 +24,15 @@ module GitCli
 
     attr_reader :logger
     def initialize
-      @logger = Tlogger.new
+      debug = ENV['GitCli_Debug']
+      debugOut = ENV['GitCli_DebugOut'] || STDOUT
+      if debug.nil?
+        @logger = Tlogger.new('git_cli.log', 5, 1024*1024*10)
+      else
+        @logger = Tlogger.new(debugOut)
+      end
     end
+
   end
 
   class GitCliException < StandardError; end
