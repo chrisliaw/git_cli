@@ -97,6 +97,7 @@ module GitCli
       check_vcs
 
       files = opts[:files] || []
+      [files] if not files.is_a?(Array)
       # have to escape the message for command line purposes
       msg = message.gsub("\"","\\\"").gsub("\\","\\\\")
 
