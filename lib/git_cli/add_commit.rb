@@ -93,9 +93,10 @@ module GitCli
       
     end # remove_from_vcs
 
-    def commit(message)
+    def commit(message, opts = { })
       check_vcs
 
+      files = opts[:files] || []
       # have to escape the message for command line purposes
       msg = message.gsub("\"","\\\"").gsub("\\","\\\\")
 
@@ -105,6 +106,9 @@ module GitCli
       cmd << "&&"
       cmd << @vcs.exe_path
       cmd << "commit"
+      if not_empty?(files)
+        cmd << files.join(" ")
+      end
       cmd << "-m"
       cmd << "\"#{msg}\""
 
