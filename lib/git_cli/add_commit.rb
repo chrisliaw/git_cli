@@ -121,7 +121,7 @@ module GitCli
         [st.success?, res.strip]
       end
 
-    end
+    end # commit
 
     def commit_all(msg)
       check_vcs
@@ -146,7 +146,9 @@ module GitCli
         [st.success?, res.strip]
       end
      
-    end
+    end # commit_all
+
+
 
   end
 end
