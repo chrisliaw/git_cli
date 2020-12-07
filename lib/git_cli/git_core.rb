@@ -67,27 +67,6 @@ module GitCli
         [true, gpath]
       end
 
-      #if Antrapol::ToolRack::RuntimeUtils.on_linux?
-      #  require_relative 'os/linux/utils'
-      #  GitCli::Global.instance.logger.debug "Running on Linux is detected"
-      #  st, path = GitCli::OS::Linux::Utils.is_installed?("git")
-      #  GitCli::Global.instance.logger.debug "'git' install check return [#{st},#{path}]"
-
-      #  [st, path]
-
-      #elsif Antrapol::ToolRack::RuntimeUtils.on_mac?
-      #  GitCli::Global.instance.logger.debug "Running on MacOS is detected"
-      #  require_relative 'os/macos/utils'
-
-      #elsif Antrapol::ToolRack::RuntimeUtils.on_window?
-      #  GitCli::Global.instance.logger.debug "Running on MS Window is detected"
-      #  require_relative 'os/win/utils'
-
-      #else
-      #  GitCli::Global.instance.logger.debug "Cannot determine which OS am i running...Confused"
-      #  raise RuntimeError, "Unknown platform"
-      #end
-
     end # is_installed?
 
   end
