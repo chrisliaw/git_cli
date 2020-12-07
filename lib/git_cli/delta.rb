@@ -52,6 +52,7 @@ module GitCli
       cmd << @wsPath
       cmd << "&&"
       cmd << @vcs.exe_path
+      # list only non staged modifications
       cmd << "diff --name-only --diff-filter=M"
 
       cmdln = cmd.join(" ")
@@ -182,6 +183,41 @@ module GitCli
       end
      
     end # deleted_files
+
+    def staged_files
+      
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "diff --name-only --cached"
+
+      cmdln = cmd.join(" ")
+      log_debug "New Files : #{cmdln}"
+      dirs = []
+      files = []
+      res = os_exec(cmdln) do |st, res|
+
+        if st.success?
+          res.each_line do |l|
+            l.chomp!
+            if File.directory?(File.join(@wsPath,l))
+              dirs << l	
+            else
+              files << l
+            end
+          end
+
+          [true, dirs.sort, files.sort]
+        else
+          [false, [], []]
+        end
+      end
+
+    end # staged_files
 
     def reset_file_changes(path)
 
