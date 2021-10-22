@@ -18,6 +18,8 @@
 module GitCli
   module AddCommit
 
+    class CommitError < StandardError; end
+
     def add_to_staging(paths)
       check_vcs
 
@@ -37,7 +39,13 @@ module GitCli
       log_debug "Add : #{cmdln}"
 
       os_exec(cmdln) do |st, res|
-        [st.success?, res.strip]
+        res.strip!
+        if not st.success?
+          raise CommitError, res
+        else
+          res
+        end
+        #[st.success?, res.strip]
       end
     end # add_to_staging
     alias :add :add_to_staging
@@ -118,7 +126,12 @@ module GitCli
       log_debug "Commit : #{cmdln}"
 
       os_exec(cmdln) do |st, res|
-        [st.success?, res.strip]
+        res.strip!
+        if not st.success?
+          raise CommitError, res
+        else
+          res
+        end
       end
 
     end # commit
@@ -143,7 +156,12 @@ module GitCli
       log_debug "Commit All : #{cmdln}"
 
       os_exec(cmdln)  do |st, res|
-        [st.success?, res.strip]
+        res.strip!
+        if not st.success?
+          raise CommitError, res
+        else
+          res.strip
+        end
       end
      
     end # commit_all

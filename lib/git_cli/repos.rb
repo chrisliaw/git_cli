@@ -18,6 +18,7 @@
 
 module GitCli
   module Repos
+    class ReposError < StandardError; end
 
     def remote_config
       check_vcs
@@ -32,21 +33,26 @@ module GitCli
       cmdln = cmd.join(" ")
       log_debug "Remote config : #{cmdln}"
       res = os_exec(cmdln) do |st, res|
-        
+       
         if st.success?
 
           remotes = { }
           res.each_line do |l|
             ls = l.split("\t")
             lss = ls[1].split(" ")
-            if not remotes.keys.include?(ls[0])
-              remotes[ls[0]] = lss[0]
-            end
+
+            remotes[ls[0]] = { } if is_empty?(remotes[ls[0]])
+            rem = remotes[ls[0]]
+            type = lss[-1]
+            type.gsub!("(","").gsub!(")","")
+            rem[type] = lss[0]
           end
 
-          [true, remotes]
+          #[true, remotes]
+          remotes
         else
-          [false, res]
+          raise ReposError, res.strip
+          #[false, res]
         end
       end
       
@@ -74,9 +80,11 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          [true, res.strip]
+          #[true, res.strip]
+          res.strip
         else
-          [false, res.strip]
+          raise ReposError, res.strip
+          #[false, res.strip]
         end
       end
 
@@ -103,13 +111,16 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          [true, res.strip]
+          #[true, res.strip]
+          res.strip
         else
-          [false, res.strip]
+          raise ReposError, res.strip
+          #[false, res.strip]
         end
       end
 
     end # remove_remote
+    alias_method :remove_del, :remove_remote
 
 
  

@@ -118,13 +118,21 @@ module GitCli
     include GitCli::Repos
     include GitCli::Stash
 
-    attr_accessor :repos
-    def initialize(vcs, path)
+    include TR::CondUtils
 
-      raise_if_empty(vcs , "VCS cannot be empty", GitCliException)
+    attr_accessor :repos
+    def initialize(path, vcs = nil)
+
+      #raise_if_empty(vcs , "VCS cannot be empty", GitCliException)
       raise_if_empty(path, "Workspace path cannot be empty", GitCliException)
-      
-      @vcs = vcs
+
+      if is_empty?(vcs)
+        @vcs = Gvcs::Vcs.new
+      else
+        @vcs = vcs
+      end
+
+      #@vcs = vcs
       @givenPath = path
 
       @wsPath = File.expand_path(@givenPath)
@@ -151,6 +159,7 @@ module GitCli
 
     def is_repos_exist?(name)
       found = false
+      load_remote_to_repos
       @repos.each do |re|
         if re.name == name
           found = true
@@ -161,8 +170,15 @@ module GitCli
     end # is_repos_exist?
 
     def is_workspace?
-      st, res = status
-      st 
+      begin
+        status
+        true
+      rescue GitDeltaError => ex
+        log_debug ex.message
+        false
+      end
+      #st, res = status
+      #st 
     end
 
     def workspace_root
@@ -195,6 +211,16 @@ module GitCli
       
     end # workspace_root
 
+    def load_remote_to_repos
+      conf = remote_config
+      conf.each do |k,v|
+        repo = Gvcs::Repository.new(k, v.values.first)
+        repo.support_fetch if v.keys.include?("fetch")
+        repo.support_push if v.keys.include?("push")
+        add_repos(repo)
+      end
+    end
+
   end # Gvcs::Workspace
 
 
@@ -208,10 +234,27 @@ module GitCli
       @url = url
       #@branches = branches
       @sslVerify = true  
+
+      @fetch = false
+      @push = false
     end
 
     def ssl_verify(bool)
       @sslVerify = bool
+    end
+
+    def support_fetch
+      @fetch = true
+    end
+    def is_fetch_supported?
+      @fetch
+    end
+
+    def support_push
+      @push = true
+    end
+    def is_push_supported?
+      @push
     end
 
   end # repository

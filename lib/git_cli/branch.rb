@@ -18,6 +18,8 @@
 
 module GitCli
   module Branch
+    
+    class BranchError < StandardError; end
 
     def current_branch
 
@@ -50,9 +52,11 @@ module GitCli
           #  end
           #end
 
-          [true, res.strip!]
+          res.strip
+          #[true, res.strip!]
         else
-          [false, res]
+          raise BranchError, res.strip
+          #[false, res]
         end
       end
       
@@ -70,7 +74,8 @@ module GitCli
         br.concat(rb)
       end
 
-      [true, br]
+      br
+      #[true, br]
        
     end # all_branches
 
@@ -95,9 +100,11 @@ module GitCli
           res.each_line do |l|
             b << l.strip
           end
-          [true, b]
+          b
+          #[true, b]
         else
-          [false, res]
+          raise BranchError, res.strip
+          #[false, res]
         end
       end
        
@@ -125,9 +132,11 @@ module GitCli
             b << l.strip
           end
           
-          [true, b]
+          #[true, b]
+          b
         else
-          [false, res]
+          raise BranchError, res.strip
+          #[false, res]
         end
       end
       
@@ -151,9 +160,11 @@ module GitCli
       log_debug "Switch branch : #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         if st.success?
-          [true, res.strip]
+          res.strip
+          #[true, res.strip]
         else
-          [false, res]
+          raise BranchError, res.strip
+          #[false, res]
         end
       end
 
@@ -180,9 +191,11 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          [true, res.strip]
+          res.strip
+          #[true, res.strip]
         else
-          [false, res]
+          raise BranchError, res.strip
+          #[false, res]
         end
       end
       
@@ -205,9 +218,11 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          [true, res.strip]
+          res.strip
+          #[true, res.strip]
         else
-          [false, res]
+          raise BranchError, res.strip
+          #[false, res]
         end
       end
       
@@ -232,9 +247,11 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          [true, res.strip]
+          res.strip
+          #[true, res.strip]
         else
-          [false, res]
+          raise BranchError, res.strip
+          #[false, res]
         end
       end
      
@@ -260,9 +277,11 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          [true, res.strip]
+          res.strip
+          #[true, res.strip]
         else
-          [false, res]
+          raise BranchError, res.strip
+          #[false, res]
         end
 
       end

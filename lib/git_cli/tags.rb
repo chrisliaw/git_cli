@@ -19,6 +19,8 @@
 module GitCli
   module Tags
 
+    class TagError < StandardError; end
+
     def all_tags
 
       check_vcs
@@ -35,9 +37,11 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          [true, res.strip!]
+          res.strip
+          #[true, res.strip!]
         else
-          [false, res]
+          raise TagError, res
+          #[false, res]
         end
       end
       
@@ -144,9 +148,11 @@ module GitCli
       log_debug "New tag : #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         if st.success?
-          [true, res.strip!]
+          #[true, res.strip!]
+          res.strip
         else
-          [false, res]
+          raise TagError, res
+          #[false, res]
         end
       end
 
@@ -186,9 +192,11 @@ module GitCli
       log_debug "New tag from commit ID : #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         if st.success?
-          [true, res.strip!]
+          res.strip
+          #[true, res.strip!]
         else
-          [false, res]
+          raise TagError, res
+          #[false, res]
         end
       end
       
@@ -211,9 +219,11 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          [true, res.strip!]
+          #[true, res.strip!]
+          res.strip
         else
-          [false, res]
+          raise TagError, res
+          #[false, res]
         end
       end
       
@@ -241,9 +251,11 @@ module GitCli
       log_debug "Show tag '#{tag}' #{not_empty?(format) ? "[#{format}]" : ""} : #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         if st.success?
-          [true, res.strip!]
+          res.strip
+          #[true, res.strip!]
         else
-          [false, res]
+          raise TagError, res
+          #[false, res]
         end
       end
       
@@ -266,9 +278,11 @@ module GitCli
       log_debug "Delete tag '#{tag}' : #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         if st.success?
-          [true, res.strip!]
+          res.strip
+          #[true, res.strip!]
         else
-          [false, res]
+          raise TagError, res
+          #[false, res]
         end
       end
       
@@ -293,9 +307,11 @@ module GitCli
       log_debug "Delete remote tag '#{tag}' at '#{repos}': #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         if st.success?
-          [true, res.strip!]
+          res
+          #[true, res.strip!]
         else
-          [false, res]
+          raise TagError, res
+          #[false, res]
         end
       end
       
@@ -321,9 +337,11 @@ module GitCli
       log_debug "Checkout tag '#{tag}' into branch '#{branch}': #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         if st.success?
-          [true, res.strip!]
+          res.strip
+          #[true, res.strip!]
         else
-          [false, res]
+          raise TagError, res
+          #[false, res]
         end
       end
       

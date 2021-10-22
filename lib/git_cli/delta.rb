@@ -19,6 +19,102 @@
 module GitCli
   module Delta
 
+    class GitDeltaError < StandardError; end
+    class VCSItem
+      attr_reader :path, :full, :type
+      def initialize(type, path, full)
+        @type = type
+        @path = path
+        @full = full
+      end
+
+      # support sort
+      def <=>(val)
+        @path <=> val.path 
+      end
+    end
+    class NewDir < VCSItem
+      def initialize(path, full)
+        super(:dir, path, full)
+      end
+      def to_s
+        "[N] #{@path}"
+      end
+    end
+    class NewFile < VCSItem
+      def initialize(path, full)
+        super(:file, path, full)
+      end
+      def to_s
+        "[N] #{@path}"
+      end
+    end
+    class ModifiedDir < VCSItem
+      def initialize(path, full)
+        super(:dir, path, full)
+      end
+      def to_s
+        "[M] #{@path}"
+      end
+    end
+    class ModifiedFile < VCSItem
+      def initialize(path, full)
+        super(:file, path, full)
+      end
+      def to_s
+        "[M] #{@path}"
+      end
+    end
+    class DeletedDir < VCSItem
+      def initialize(path, full)
+        super(:dir, path, full)
+      end
+      def to_s
+        "[D] #{@path}"
+      end
+    end
+    class DeletedFile < VCSItem
+      def initialize(path, full)
+        super(:file, path, full)
+      end
+      def to_s
+        "[D] #{@path}"
+      end
+    end
+    class StagedDir < VCSItem
+      def initialize(path, full)
+        super(:dir, path, full)
+      end
+      def to_s
+        "[S] #{@path}"
+      end
+    end
+    class StagedFile < VCSItem
+      def initialize(path, full)
+        super(:file, path, full)
+      end
+      def to_s
+        "[S] #{@path}"
+      end
+    end
+    class ConflictedDir < VCSItem
+      def initialize(path, full)
+        super(:dir, path, full)
+      end
+      def to_s
+        "[C] #{@path}"
+      end
+    end
+    class ConflictedFile < VCSItem
+      def initialize(path, full)
+        super(:file, path, full)
+      end
+      def to_s
+        "[C] #{@path}"
+      end
+    end
+
+
     def status
       
       check_vcs
@@ -34,11 +130,16 @@ module GitCli
       log_debug "Status : #{cmdln}"
       res = os_exec(cmdln) do |st, res|
 
-        if st.success?
-          [true, res]
+        if not st.success?
+          raise GitDeltaError, res
         else
-          [false, res]
+          res
         end
+        #if st.success?
+        #  [true, res]
+        #else
+        #  [false, res]
+        #end
       end
       
     end # status
@@ -61,19 +162,21 @@ module GitCli
       files = []
       res = os_exec(cmdln) do |st, res|
 
-        if st.success?
+        if not st.success?
+          raise GitDeltaError, res
+        else
           res.each_line do |l|
             l.chomp!
-            if File.directory?(File.join(@wsPath,l))
-              dirs << l	
+            full = File.join(@wsPath,l)
+            if File.directory?(full)
+              dirs << ModifiedDir.new(l,full)	
             else
-              files << l
+              files << ModifiedFile.new(l,full)
             end
           end
 
-          [true, dirs.sort, files.sort]
-        else
-          [false, [], []]
+          #[true, dirs.sort, files.sort]
+          [dirs.sort, files.sort]
         end
 
       end
@@ -96,19 +199,20 @@ module GitCli
       files = []
       res = os_exec(cmdln) do |st, res|
 
-        if st.success?
+        if not st.success?
+          raise GitDeltaError, res
+        else
           res.each_line do |l|
             l.chomp!
-            if File.directory?(File.join(@wsPath,l))
-              dirs << l	
+            full = File.join(@wsPath,l)
+            if File.directory?(full)
+              dirs << ConflictedDir.new(l, full)	
             else
-              files << l
+              files << ConflictedFile.new(l, full)
             end
           end
 
-          [true, dirs.sort, files.sort]
-        else
-          [false, [], []]
+          [dirs.sort, files.sort]
         end
 
       end
@@ -131,19 +235,20 @@ module GitCli
       files = []
       res = os_exec(cmdln) do |st, res|
 
-        if st.success?
+        if not st.success?
+          raise GitDeltaError, res
+        else
           res.each_line do |l|
             l.chomp!
-            if File.directory?(File.join(@wsPath,l))
-              dirs << l	
+            full = File.join(@wsPath,l)
+            if File.directory?(full)
+              dirs << NewDir.new(l,full)
             else
-              files << l
+              files << NewFile.new(l,full)
             end
           end
 
-          [true, dirs.sort, files.sort]
-        else
-          [false, [], []]
+          [dirs.sort, files.sort]
         end
       end
 
@@ -166,19 +271,20 @@ module GitCli
       files = []
       res = os_exec(cmdln) do |st, res|
 
-        if st.success?
+        if not st.success?
+          raise GitDeltaError, res
+        else
           res.each_line do |l|
             l.chomp!
-            if File.directory?(File.join(@wsPath,l))
-              dirs << l	
+            full = File.join(@wsPath,l)
+            if File.directory?(full)
+              dirs << DeletedDir.new(l,full)	
             else
-              files << l
+              files << DeletedFile.new(l,full)
             end
           end
 
-          [true, dirs.sort, files.sort]
-        else
-          [false, [], []]
+          [dirs.sort, files.sort]
         end
       end
      
@@ -196,24 +302,25 @@ module GitCli
       cmd << "diff --name-only --cached"
 
       cmdln = cmd.join(" ")
-      log_debug "New Files : #{cmdln}"
+      log_debug "Staged Files : #{cmdln}"
       dirs = []
       files = []
       res = os_exec(cmdln) do |st, res|
 
-        if st.success?
+        if not st.success?
+          raise GitDeltaError, res
+        else
           res.each_line do |l|
             l.chomp!
-            if File.directory?(File.join(@wsPath,l))
-              dirs << l	
+            full = File.join(@wsPath,l)
+            if File.directory?(full)
+              dirs << StagedDir.new(l,full)	
             else
-              files << l
+              files << StagedFile.new(l,full)
             end
           end
 
-          [true, dirs.sort, files.sort]
-        else
-          [false, [], []]
+          [dirs.sort, files.sort]
         end
       end
 
@@ -221,7 +328,7 @@ module GitCli
 
     def reset_file_changes(path)
 
-      raise_if_empty(path, "Path cannot be empty for reset file changes operation", GitCliException)
+      raise_if_empty(path, "Path cannot be empty for reset file changes operation", GitDeltaError)
 
       check_vcs
 
