@@ -15,8 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-require 'tlogger'
+#require 'tlogger'
+require 'teLogger'
 require 'singleton'
+
+include TeLogger
 
 module GitCli
   class Global

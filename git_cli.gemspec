@@ -27,10 +27,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "tlogger"
+  #spec.add_dependency "tlogger"
+  spec.add_dependency 'teLogger'
   spec.add_dependency "toolrack"
   spec.add_dependency "gvcs" 
   spec.add_dependency "ptools", "~> 1.4.0"
 
-  spec.add_development_dependency 'devops_helper' #, ">= 0.2.0"
+  #spec.add_development_dependency 'devops_helper' #, ">= 0.2.0"
+  spec.add_development_dependency 'devops_assist' #, ">= 0.2.0"
 end
