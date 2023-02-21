@@ -136,7 +136,7 @@ module GitCli
 
     end # commit
 
-    def commit_all(msg)
+    def commit_all(message)
       check_vcs
       
       # have to escape the message for command line purposes
@@ -149,7 +149,7 @@ module GitCli
       cmd << @vcs.exe_path
       cmd << "commit"
       cmd << "-am"
-      cmd << msg
+      cmd << "\"#{msg}\""
 
       cmdln = cmd.join " "
 
