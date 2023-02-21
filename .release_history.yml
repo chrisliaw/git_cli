@@ -2,3 +2,5 @@
 git_cli:
 - :version: 0.10.0
   :timestamp: 1661971875.794398
+- :version: 0.11.0
+  :timestamp: 1676968140.9885945
