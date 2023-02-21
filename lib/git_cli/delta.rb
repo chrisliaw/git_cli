@@ -367,6 +367,41 @@ module GitCli
       
     end # reset all changes
 
+    # If remote is ahead of local
+    # git rev-list HEAD..origin/main --count
+    #
+    # if local is ahead of remote
+    # git rev-list origin/main..HEAD --count
+    #
+    def calculate_distance(from, to) 
+
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "rev-list #{from}..#{to} --count"
+
+      cmdln = cmd.join(" ")
+      log_debug "Calculate distance between two repos : #{cmdln}"
+      res = os_exec(cmdln) do |st, res|
+        [st.success?, res]
+      end
+      
+    end
+
+    def is_local_ahead_of_remote?(remote_name, branch = "main")
+      
+      calculate_distance("#{remote_name}/#{branch}", "HEAD")
+
+    end
+
+    def is_remote_ahead_of_local?(remote_name, branch = "main")
+      
+      calculate_distance("HEAD","#{remote_name}/#{branch}")
+    end
 
   end
 end

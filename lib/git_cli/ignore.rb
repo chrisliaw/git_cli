@@ -19,9 +19,12 @@
 module GitCli
   module Ignore
 
-    def ignore(val)
+    def ignore(*val)
       with_ignore_file do |f|
-        f.puts val
+        val.each do |v|
+          f.puts v
+        end
+        #f.puts val
       end 
       log_debug ".gitignore file updated with line '#{val}'"
       [true,".gitignore file updated"]

@@ -46,6 +46,9 @@ module GitCli
     include Antrapol::ToolRack::ExceptionUtils
 
     def os_exec(path, &block)
+
+      Gvcs::Config.instance.command_output.puts("Git command : #{path}") if Gvcs::Config.instance.is_show_vcs_command?
+
       # redirect stderr to stdout
       path = "#{path} 2>&1"
       res = Antrapol::ToolRack::ProcessUtilsEngine.exec(path)
@@ -221,6 +224,23 @@ module GitCli
       end
     end
 
+    def repos
+      if @repos.nil? or @repos.empty?
+        load_remote_to_repos
+      end
+      @repos
+    end
+
+    def is_clean?
+      nd, nf = new_files
+      md, mf = modified_files
+      dd, df = deleted_files
+      sd, sf = staged_files
+
+      (nd.length == 0 and nf.length == 0 and md.length == 0 and mf.length == 0 and dd.length == 0 and df.length == 0 and sd.length == 0 and sf.length == 0)
+    end
+    alias_method :clean?, :is_clean?
+
   end # Gvcs::Workspace
 
 
@@ -249,6 +269,7 @@ module GitCli
     def is_fetch_supported?
       @fetch
     end
+    alias_method :can_fetch?, :is_fetch_supported?
 
     def support_push
       @push = true
@@ -256,6 +277,7 @@ module GitCli
     def is_push_supported?
       @push
     end
+    alias_method :can_push?, :is_push_supported?
 
   end # repository
 

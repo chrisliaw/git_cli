@@ -15,5 +15,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 module GitCli
-  VERSION = "0.9.0"
+  VERSION = "0.10.0"
 end
