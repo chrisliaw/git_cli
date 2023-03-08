@@ -11,3 +11,4 @@ tags
 *.log
 
 .rake_tasks~
+Gemfile.lock_
