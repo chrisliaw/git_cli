@@ -30,11 +30,19 @@ module GitCli
 
       # support sort
       def <=>(val)
-        @path <=> val.path 
+        if val.is_a?(VCSItem)
+          @path <=> val.path
+        else
+          false
+        end
       end
 
       def ==(val)
-        @path == val.path
+        if val.is_a?(VCSItem)
+          @path == val.path
+        else
+          false
+        end
       end
     end
     class NewDir < VCSItem
