@@ -32,6 +32,10 @@ module GitCli
       def <=>(val)
         @path <=> val.path 
       end
+
+      def ==(val)
+        @path == val.path
+      end
     end
     class NewDir < VCSItem
       def initialize(path, full)
@@ -394,13 +398,25 @@ module GitCli
 
     def is_local_ahead_of_remote?(remote_name, branch = "main")
       
-      calculate_distance("#{remote_name}/#{branch}", "HEAD")
+      st, res = calculate_distance("#{remote_name}/#{branch}", "HEAD")
+      if st
+        res.to_i > 0
+      else
+        # not push before
+        true
+      end
 
     end
 
     def is_remote_ahead_of_local?(remote_name, branch = "main")
       
-      calculate_distance("HEAD","#{remote_name}/#{branch}")
+      st, res = calculate_distance("HEAD","#{remote_name}/#{branch}")
+      if st
+        res.to_i > 0
+      else
+        # never pull before?
+        true
+      end
     end
 
   end

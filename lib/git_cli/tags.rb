@@ -347,5 +347,32 @@ module GitCli
       
     end # checkout_tag
 
+    def tag_points_at?(dest = "HEAD")
+      
+      #raise_if_empty(tag, "Tag name cannot be empty", GitCliException)
+
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "tag"
+      cmd << "--points-at"
+      cmd << dest
+
+      cmdln = cmd.join(" ")
+      log_debug "Check if current tag is pointing to #{dest}"
+      res = os_exec(cmdln) do |st, res|
+        if st.success?
+          not_empty?(res.strip)
+        else
+          raise TagError, res
+        end
+      end
+      
+    end # is_tag_points_at?
+
   end
 end

@@ -20,9 +20,10 @@ module GitCli
   module Ignore
 
     def ignore(*val)
-      with_ignore_file do |f|
+      with_ignore_file("a+") do |f|
+        cont = f.read
         val.each do |v|
-          f.puts v
+          f.puts(v) if (cont =~ /^#{v}\Z/) == nil
         end
         #f.puts val
       end 
@@ -62,14 +63,15 @@ module GitCli
     end
 
     private
-    def with_ignore_file(&block)
+    def with_ignore_file(mode = "a", &block)
+      mode = "a" if is_empty?(mode)
       if block
         st, root = workspace_root
         root.strip!
         if st
           igPath = File.join(root,".gitignore")
           FileUtils.touch(igPath) if not File.exist?(igPath)
-          File.open(igPath,"a") do |f|
+          File.open(igPath,mode) do |f|
             block.call(f)
           end
         else

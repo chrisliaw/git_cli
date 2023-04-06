@@ -74,12 +74,12 @@ module GitCli
       log_debug "#{opts[:log_tag]} : #{cmdln} "
 
       res = os_exec(cmdln) do |st, res|
-        
-        if st.success?
-          [true, res.strip!]
-        else
-          [false, res]
-        end
+        [st.success?, res.strip!]        
+        #if st.success?
+        #  [true, res.strip!]
+        #else
+        #  [false, res]
+        #end
       end
       
     end

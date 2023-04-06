@@ -51,14 +51,18 @@ module GitCli
 
       # redirect stderr to stdout
       path = "#{path} 2>&1"
-      res = Antrapol::ToolRack::ProcessUtilsEngine.exec(path)
-      if block
-        # $?.exitstatus => error codes
-        # $?.success? => true / false
-        # $?.pid => child PID
-        block.call($?, res)
+      if dry_run
+        block.call(:dry_run_command, path) if block
       else
-        res.strip
+        res = Antrapol::ToolRack::ProcessUtilsEngine.exec(path)
+        if block
+          # $?.exitstatus => error codes
+          # $?.success? => true / false
+          # $?.pid => child PID
+          block.call($?, res)
+        else
+          res.strip
+        end
       end
     end
 
@@ -72,6 +76,14 @@ module GitCli
 
     def log_warn(str)
       GitCli::Global.instance.logger.warn(str)
+    end
+
+    def dry_run=(val)
+      @dry_run = val if not_empty?(val) and is_bool?(val)
+    end
+
+    def dry_run
+      @dry_run.nil? ? false : @dry_run
     end
   end # common operations
 
@@ -202,9 +214,9 @@ module GitCli
         res = os_exec(cmdln) do |st, res|
 
           if st.success?
-            @wsRoot = [true, res]
+            @wsRoot = [true, res.strip]
           else
-            @wsRoot = [false, res]
+            @wsRoot = [false, res.strip]
           end
         end
 

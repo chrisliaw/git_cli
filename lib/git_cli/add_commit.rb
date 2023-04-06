@@ -20,7 +20,7 @@ module GitCli
 
     class CommitError < StandardError; end
 
-    def add_to_staging(paths)
+    def add_to_staging(*paths)
       check_vcs
 
       raise_if_empty(paths, "Given path to add is empty", GitCliException)
@@ -33,7 +33,7 @@ module GitCli
       cmd << "&&"
       cmd << @vcs.exe_path
       cmd << "add"
-      cmd.append(paths)
+      cmd.append(paths.join(" "))
       cmdln = cmd.join " "
 
       log_debug "Add : #{cmdln}"
@@ -126,12 +126,13 @@ module GitCli
       log_debug "Commit : #{cmdln}"
 
       os_exec(cmdln) do |st, res|
-        res.strip!
-        if not st.success?
-          raise CommitError, res
-        else
-          res
-        end
+        [st.success?, res.strip!]
+        #res.strip!
+        #if not st.success?
+        #  raise CommitError, res
+        #else
+        #  res
+        #end
       end
 
     end # commit
