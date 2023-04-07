@@ -55,7 +55,8 @@ The following operations are supported on the git command line:
   - vcs.init("/path/to/new/workspace")
   - vcs.clone("/source/repos","/path/to/workspace")
 - Workspace command
-  - workspace.root\_path  # git rev-parse --show-toplevel
+  - workspace.root\_path
+    > git rev-parse --show-toplevel
   - workspace.is\_workspace? # call git status see if error thrown
   - workspace.repos # returns list of remote repositories
   - workspace.clean? # return true if there is no new,deleted,modified and staged files
