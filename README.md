@@ -74,67 +74,142 @@ The following operations are supported on the git command line:
   - workspace.commit\_all("commit message")
     > git commit -am 
   - workspace.status
-    > git status 
     - Returns list of GitCli::Delta::VCSItem carries attributes @path, @full and @type
-  - workspace.modified\_files # git diff --name-only --diff-filter=M [returns modified directories and files in an array]
-  - workspace.conflicted\_files # git diff --name-only --diff-filter=U [returns conflicted directories and files in an array]
-  - workspace.new\_files # git ls-files --others --exclude-standard --directory [returns new directories and files (non tracked) in an array]
-  - workspace.deleted\_files # git ls-files -d [returns deleted directories and files in an array]
-  - workspace.staged\_files # git diff --name-only --cached  [returns staged directories and files in an array]
-  - workspace.reset\_file\_changes("/path/to/file") # git checkout --
-  - workspace.reset\_all\_changes # git reset --hard
-  - workspace.calculat\_distance("origin/HEAD","HEAD") # git rev-list 'origin/HEAD'..'HEAD' --count [returns integer value how far is it]
-  - workspace.is\_local\_ahead\_of\_remote?("origin/HEAD","branch-main") # aggregated from calculate\_distance() with default _to_ value fixed at "HEAD" [returns boolean]
-  - workspace.is\_remote\_ahead\_of\_local?("origin/HEAD","branch-main") # aggregated from calculate\_distance() with default _from_ value fixed at "HEAD" [returns boolean]
-  - workspace.push("origin","master") # git push origin master
-  - workspace.push\_with\_tags("origin","master") # git push origin master --tags
-  - workspace.pull("origin","master") # git pull
-  - workspace.current\_branch # git branch --show-current [returns branch name]
-  - workspace.local\_branches # git branch [return local branches in an array]
-  - workspace.remote\_branches # git branch -r [return remote branches in an array]
-  - workspace.all\_branches # concate output of local\_branches and remote\_branches [returns array]
-  - workspace.switch\_branch("new-branch") # git checkout new-branch
-  - workspace.create\_branch("new-branch") # git branch new-branch
-  - workspace.download\_all\_remote\_branches\_name # git fetch -all
-  - workspace.merge\_branch("development") # git merge development
-  - workspace.delete\_branch("development") # git branch -d development
-  - workspace.diff # git diff
-  - workspace.diff\_file("/path/a") # git diff /path/a
-  - workspace.diff\_branch("master/HEAD","development/HEAD") # git diff master/HEAD..development/HEAD
-  - workspace.diff\_working\_with\_last\_commit # git diff HEAD^ HEAD
-  - workspace.diff\_index\_with\_last\_commit # git diff --cached
-  - workspace.ignore("/path/a","/path/b") # Append entries into .gitignore file
-  - workspace.ignore\_rules # read the .gitignore files and returns its content in an array
-  - workspace.update\_ignore\_rules("\*.log") # add non file entries into .gitignore
-  - workspace.show\_log(commit\_id) # git show commit\_id
-  - workspace.all\_tags # git tag [returns array]
-  - workspace.tag\_info("tag name", "%H|%ad|%an|%s") # git show tag\_name --format="%H|%ad|%an|%s"
-  - workspace.create\_tag(tagname) # git tag tagname
-  - workspace.create\_tag(tagname, message) # git tag -a tagname -m message
-  - workspace.create\_tag\_from\_commit(tagname, commit) # git tag -a tagname commit
-  - workspace.create\_tag\_from\_commit(tagname, commit, message) # git tag -a tagname -m message commit
-  - workspace.fetch\_tag\_to\_local  # git fetch --all --tags
-  - workspace.show\_tag\_detail(tagname) # git show tagname
-  - workspace.delete\_tag(tagname) # git tag -d tagname
-  - workspace.delete\_remote\_tag("origin","tagname") # git push origin --delete tagname
-  - workspace.checkout\_tag(tagname, branch) # git checkout tags/tagname -b branch
-  - workspace.tag\_points\_at?("HEAD") # git tag --points-at HEAD [Return boolean]
-  - workspace.remote\_config # git remote -vv [return Hash with repos name as key, points to hash with "push" or "fetch" as key]
-  - workspace.add\_remote(name, url) # git remote add name url
-  - workspace.remove\_remote(name) # git remote remove name
-  - workspace.stash\_changes(msg) # git stash save "msg"
-  - workspace.stash\_all\_chanegs(msg) # git stash save --include-untracked
-  - workspace.stash\_all\_chanegs(msg, true) # git stash save --include-untracked(-u) --all(-a)
-  - workspace.stash\_list # git stash list [returns boolean and hash of stash info]
-  - workspace.stash\_restore # git stash apply
-  - workspace.stash\_restore(id) # git stash apply id --> ID can be obtained from stash\_list. Something like "stash@{0}"
-  - workspace.stash\_restore\_and\_remove  # git stash pop
-  - workspace.stash\_restore\_and\_remove(id)  # git stash pop id --> ID can be obtained from stash\_list. Something like "stash@{0}"
-  - workspace.stash\_to\_new\_branch(branch) # git stash branch
-  - workspace.stash\_to\_new\_branch(branch, id) # git stash branch id
-  - workspace.stash\_clear # git stash clear
-  - workspace.stash\_remove # git stash drop
-  - workspace.stash\_remove(id) # git stash drop id
+    > git status 
+  - workspace.modFiles
+    - Returns modified files (GitCli::Delta::VCSItem) in an array
+    > git diff --name-only --diff-filter=M 
+  - workspace.cftFiles 
+    - Returns conflicted files (GitCli::Delta::VCSItem) in an array
+    > git diff --name-only --diff-filter=U 
+  - workspace.newFiles
+    - Returns and files (non tracked) (GitCli::Delta::VCSItem) in an array
+    > git ls-files --others --exclude-standard --directory 
+  - workspace.delFiles
+    - Returns deleted files (GitCli::Delta::VCSItem) in an array
+    > git ls-files -d 
+  - workspace.stgFiles
+    - Returns staged files (GitCli::Delta::VCSItem) in an array
+    > git diff --name-only --cached  
+  - workspace.reset\_file\_changes("/path/to/file") 
+    > git checkout --
+  - workspace.reset\_all\_changes 
+    > git reset --hard
+  - workspace.calculat\_distance("origin/HEAD","HEAD") 
+    - Returns integer value how far is it
+    > git rev-list 'origin/HEAD'..'HEAD' --count 
+  - workspace.is\_local\_ahead\_of\_remote?("origin/HEAD","branch-main") 
+    - Aggregated from calculate\_distance() with default _to_ value fixed at "HEAD" 
+    - Returns boolean
+  - workspace.is\_remote\_ahead\_of\_local?("origin/HEAD","branch-main") 
+    - aggregated from calculate\_distance() with default _from_ value fixed at "HEAD" 
+    - Returns boolean
+  - workspace.push("origin","master") 
+    > git push origin master
+  - workspace.push\_with\_tags("origin","master") 
+    > git push origin master --tags
+  - workspace.pull("origin","master") 
+    > git pull origin master
+  - workspace.current\_branch 
+    - Returns branch name
+    > git branch --show-current 
+  - workspace.local\_branches 
+    - Return local branches in an array
+    > git branch 
+  - workspace.remote\_branches 
+    - Return remote branches in an array
+    > git branch -r 
+  - workspace.all\_branches 
+    - Concate output of local\_branches and remote\_branches
+    - Returns array
+  - workspace.switch\_branch("new-branch") 
+    > git checkout new-branch
+  - workspace.create\_branch("new-branch") 
+    > git branch new-branch
+  - workspace.download\_all\_remote\_branches\_name 
+    > git fetch -all
+  - workspace.merge\_branch("development")
+    > git merge development
+  - workspace.delete\_branch("development") 
+    > git branch -d development
+  - workspace.diff 
+    > git diff
+  - workspace.diff\_file("/path/a") 
+    > git diff /path/a
+  - workspace.diff\_branch("master/HEAD","development/HEAD") 
+    > git diff master/HEAD..development/HEAD
+  - workspace.diff\_working\_with\_last\_commit 
+    > git diff HEAD^ HEAD
+  - workspace.diff\_index\_with\_last\_commit 
+    > git diff --cached
+  - workspace.ignore("/path/a","/path/b") 
+    - Append entries into .gitignore file
+  - workspace.ignore\_rules 
+    - Read the .gitignore files and returns its content in an array
+  - workspace.update\_ignore\_rules("\*.log") 
+    - Add non file entries into .gitignore
+  - workspace.show\_log(commit\_id) 
+    > git show commit\_id
+  - workspace.all\_tags 
+    - Returns array
+    > git tag 
+  - workspace.tag\_info("tagname", "%H|%ad|%an|%s") 
+    > git show tagname --format="%H|%ad|%an|%s"
+  - workspace.create\_tag(tagname) 
+    > git tag tagname
+  - workspace.create\_tag(tagname, message) 
+    > git tag -a tagname -m message
+  - workspace.create\_tag\_from\_commit(tagname, commit) 
+    > git tag -a tagname commit
+  - workspace.create\_tag\_from\_commit(tagname, commit, message) 
+    > git tag -a tagname -m message commit
+  - workspace.fetch\_tag\_to\_local  
+    > git fetch --all --tags
+  - workspace.show\_tag\_detail(tagname) 
+    > git show tagname
+  - workspace.delete\_tag(tagname) 
+    > git tag -d tagname
+  - workspace.delete\_remote\_tag("origin","tagname") 
+    > git push origin --delete tagname
+  - workspace.checkout\_tag(tagname, branch) 
+    > git checkout tags/tagname -b branch
+  - workspace.tag\_points\_at?("HEAD") 
+    - Return boolean
+    > git tag --points-at HEAD 
+  - workspace.remote\_config 
+    - Return Hash with repos name as key, points to hash with "push" or "fetch" as key
+    > git remote -vv 
+  - workspace.add\_remote(name, url) 
+    > git remote add name url
+  - workspace.remove\_remote(name) 
+    > git remote remove name
+  - workspace.stash\_changes(msg) 
+    > git stash save "msg"
+  - workspace.stash\_all\_chanegs(msg) 
+    > git stash save --include-untracked
+  - workspace.stash\_all\_chanegs(msg, true) 
+    > git stash save --include-untracked(-u) --all(-a)
+  - workspace.stash\_list 
+    - Returns boolean and hash of stash info
+    > git stash list 
+  - workspace.stash\_restore 
+    > git stash apply
+  - workspace.stash\_restore(id) 
+    > git stash apply id --> ID can be obtained from stash\_list. Something like "stash@{0}"
+  - workspace.stash\_restore\_and\_remove  
+    > git stash pop
+  - workspace.stash\_restore\_and\_remove(id)  
+    > git stash pop id --> ID can be obtained from stash\_list. Something like "stash@{0}"
+  - workspace.stash\_to\_new\_branch(branch) 
+    > git stash branch
+  - workspace.stash\_to\_new\_branch(branch, id) 
+    > git stash branch id
+  - workspace.stash\_clear 
+    > git stash clear
+  - workspace.stash\_remove 
+    > git stash drop
+  - workspace.stash\_remove(id) 
+    > git stash drop id
 
 
 
