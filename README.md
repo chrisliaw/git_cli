@@ -57,15 +57,25 @@ The following operations are supported on the git command line:
 - Workspace command
   - workspace.root\_path
     > git rev-parse --show-toplevel
-  - workspace.is\_workspace? # call git status see if error thrown
-  - workspace.repos # returns list of remote repositories
-  - workspace.clean? # return true if there is no new,deleted,modified and staged files
-  - workspace.add("/path/a","/path/b","/path/c/a") # git add
-  - workspace.remove\_staging("/path/a","/path/b","/path/c/a") # git reset
-  - workspace.remove\_vcs("/path/a","/path/b","/path/c/a") # git rm --cached
-  - workspace.commit("commit message", { files: ["/path/a"."/path/b"] }) # git commit -m
-  - workspace.commit\_all("commit message") # git commit -am 
-  - workspace.status # git status [Returns list of GitCli::Delta::VCSItem carries attributes @path, @full and @type]
+  - workspace.is\_workspace? 
+    - Call git status see if error thrown
+  - workspace.repos 
+    - Returns list of remote repositories
+  - workspace.clean?
+    - Return true if there is no new,deleted,modified and staged files
+  - workspace.add("/path/a","/path/b","/path/c/a")
+    > git add
+  - workspace.remove\_staging("/path/a","/path/b","/path/c/a") 
+    > git reset
+  - workspace.remove\_vcs("/path/a","/path/b","/path/c/a") 
+    > git rm --cached 
+  - workspace.commit("commit message", { files: ["/path/a"."/path/b"] })
+    > git commit /path/a /path/b -m "commit message"
+  - workspace.commit\_all("commit message")
+    > git commit -am 
+  - workspace.status
+    > git status 
+    - Returns list of GitCli::Delta::VCSItem carries attributes @path, @full and @type
   - workspace.modified\_files # git diff --name-only --diff-filter=M [returns modified directories and files in an array]
   - workspace.conflicted\_files # git diff --name-only --diff-filter=U [returns conflicted directories and files in an array]
   - workspace.new\_files # git ls-files --others --exclude-standard --directory [returns new directories and files (non tracked) in an array]
