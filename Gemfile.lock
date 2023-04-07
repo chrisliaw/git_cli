@@ -1,8 +1,7 @@
 PATH
   remote: .
   specs:
-    git_cli (0.11.4)
-      gvcs
+    git_cli (0.12.0)
       ptools (~> 1.4.0)
       teLogger
       toolrack
@@ -11,25 +10,13 @@ GEM
   remote: https://rubygems.org/
   specs:
     colorize (0.8.1)
-    devops_assist (0.3.11)
-      git_cli
-      git_cli_prompt (~> 0.3.3)
-      gvcs
-      teLogger
-      toolrack
-      tty-prompt
-    gem-release (2.2.2)
-    git_cli_prompt (0.3.4)
-      teLogger
-      toolrack
-      tty-prompt
     gvcs (0.1.2)
     minitest (5.18.0)
     pastel (0.8.0)
       tty-color (~> 0.5)
     ptools (1.4.3)
     rake (12.3.3)
-    release-gem (0.1.10)
+    release-gem (0.1.19)
       colorize
       git_cli
       gvcs
@@ -38,7 +25,7 @@ GEM
       tty-command
       tty-prompt
     teLogger (0.2.2)
-    toolrack (0.22.0)
+    toolrack (0.22.1)
     tty-color (0.6.0)
     tty-command (0.10.1)
       pastel (~> 0.8)
@@ -57,8 +44,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  devops_assist
-  gem-release
   git_cli!
   minitest (~> 5.0)
   rake (~> 12.0)
