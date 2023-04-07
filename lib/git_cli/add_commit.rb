@@ -25,15 +25,14 @@ module GitCli
 
       raise_if_empty(paths, "Given path to add is empty", GitCliException)
 
-      paths = [paths] if not paths.is_a?(Array)
-
       cmd = []
       cmd << "cd"
       cmd << @wsPath
       cmd << "&&"
       cmd << @vcs.exe_path
       cmd << "add"
-      cmd.append(paths.join(" "))
+
+      cmd.append(GitCli::Workspace.args_to_string_array(paths).join(" "))
       cmdln = cmd.join " "
 
       log_debug "Add : #{cmdln}"
@@ -51,12 +50,10 @@ module GitCli
     alias :add :add_to_staging
     alias :add_staging :add_to_staging
 
-    def remove_from_staging(paths)
+    def remove_from_staging(*paths)
       check_vcs
 
       raise_if_empty(paths, "Given path to reset is empty", GitCliException)
-
-      paths = [paths] if not paths.is_a?(Array)
 
       cmd = []
       cmd << "cd"
@@ -64,7 +61,8 @@ module GitCli
       cmd << "&&"
       cmd << @vcs.exe_path
       cmd << "reset"
-      cmd.append(paths)
+
+      cmd.append(GitCli::Workspace.args_to_string_array(paths))
       cmdln = cmd.join " "
 
       log_debug "reset : #{cmdln}"
@@ -76,13 +74,11 @@ module GitCli
     end # remove_from_staging
     alias :remove_staging :remove_from_staging
 
-    def remove_from_vcs(paths)
+    def remove_from_vcs(*paths)
       
       check_vcs
 
       raise_if_empty(paths, "Given path to remove from VCS is empty", GitCliException)
-
-      paths = [paths] if not paths.is_a?(Array)
 
       cmd = []
       cmd << "cd"
@@ -90,7 +86,8 @@ module GitCli
       cmd << "&&"
       cmd << @vcs.exe_path
       cmd << "rm --cached"
-      cmd.append(paths)
+      
+      cmd.append(GitCli::Workspace.args_to_string_array(paths))
       cmdln = cmd.join " "
 
       log_debug "Remove from git version control : #{cmdln}"
@@ -100,6 +97,7 @@ module GitCli
       end
       
     end # remove_from_vcs
+    alias :remove_vcs :remove_from_vcs
 
     def commit(message, opts = { })
       check_vcs
@@ -116,7 +114,7 @@ module GitCli
       cmd << @vcs.exe_path
       cmd << "commit"
       if not_empty?(files)
-        cmd << files.join(" ")
+        cmd << GitCli::Workspace.args_to_string_array(files).join(" ")
       end
       cmd << "-m"
       cmd << "\"#{msg}\""

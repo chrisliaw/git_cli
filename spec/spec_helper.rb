@@ -12,6 +12,7 @@
 # the additional setup, and require it from the spec files that actually need
 # it.
 #
+require 'git_cli'
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -97,4 +98,27 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+  ENV['GitCli_Debug'] = "true"
+  config.before :each do
+    @path = File.join(File.dirname(__FILE__),"fixture","sample_git_ws")
+    @reposPath = File.join(File.dirname(__FILE__),"fixture","sample_git_repos")
+    @coPath = File.join(File.dirname(__FILE__),"fixture","sample_git_ws_co")
+    FileUtils.rm_rf(@path) if File.exist?(@path)
+    FileUtils.rm_rf(@reposPath) if File.exist?(@reposPath)
+    FileUtils.rm_rf(@coPath) if File.exist?(@coPath)
+
+    @ws = Gvcs::Workspace.new(@path)
+    expect(@ws.is_workspace?).to be false
+
+    st, res = @ws.vcs.init(@path)
+    expect(st).to be true
+    expect(@ws.clean?).to be true
+    expect(@ws.is_workspace?).to be true
+    expect(@ws.root_path == @path).to be true
+
+    st, res = @ws.vcs.init(@reposPath, true)
+    expect(st).to be true
+    
+  end
 end
+

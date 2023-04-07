@@ -30,11 +30,10 @@ Gem::Specification.new do |spec|
   #spec.add_dependency "tlogger"
   spec.add_dependency 'teLogger'
   spec.add_dependency "toolrack"
-  spec.add_dependency "gvcs" 
+  #spec.add_dependency "gvcs" 
   spec.add_dependency "ptools", "~> 1.4.0"
 
   #spec.add_development_dependency 'devops_helper' #, ">= 0.2.0"
-  spec.add_development_dependency 'devops_assist' #, ">= 0.2.0"
-  spec.add_development_dependency 'gem-release'
+  #spec.add_development_dependency 'devops_assist' #, ">= 0.2.0"
   spec.add_development_dependency 'release-gem'
 end

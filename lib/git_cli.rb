@@ -85,9 +85,12 @@ module GitCli
     def dry_run
       @dry_run.nil? ? false : @dry_run
     end
+
   end # common operations
 
-  class Gvcs::Vcs
+  #class Gvcs::Vcs
+  class Vcs
+    include TR::CondUtils
     include GitCli::Common
     include GitCli::GitCore
     include GitCli::Init
@@ -118,7 +121,9 @@ module GitCli
     end
   end # WsCommon
 
-  class Gvcs::Workspace
+  #class Gvcs::Workspace
+  class Workspace
+    include TR::CondUtils
     include GitCli::Common
     include WsCommon
     include GitCli::AddCommit
@@ -214,9 +219,11 @@ module GitCli
         res = os_exec(cmdln) do |st, res|
 
           if st.success?
-            @wsRoot = [true, res.strip]
+            @wsRoot = res.strip
+            #@wsRoot = [true, res.strip]
           else
-            @wsRoot = [false, res.strip]
+            raise GitCliException, "Failure executing : #{cmdln} \nError was : #{res.strip}" 
+            #@wsRoot = [false, res.strip]
           end
         end
 
@@ -225,6 +232,7 @@ module GitCli
       @wsRoot
       
     end # workspace_root
+    alias_method :root_path, :workspace_root
 
     def load_remote_to_repos
       conf = remote_config
@@ -252,11 +260,30 @@ module GitCli
       (nd.length == 0 and nf.length == 0 and md.length == 0 and mf.length == 0 and dd.length == 0 and df.length == 0 and sd.length == 0 and sf.length == 0)
     end
     alias_method :clean?, :is_clean?
+    alias_method :clear?, :is_clean?
+
+    def self.args_to_string_array(*args)
+      res = []
+      args.each do |e|
+        case e
+        when Delta::VCSItem
+          res << e.path
+        when Array
+          res.concat(args_to_string_array(*e))
+        when String
+          res << e
+        else
+          res << e.to_s
+        end
+      end
+      res
+    end
 
   end # Gvcs::Workspace
 
 
-  class Gvcs::Repository
+  #class Gvcs::Repository
+  class Repository
     
     attr_reader :sslVerify
     attr_reader :name, :url
@@ -294,3 +321,9 @@ module GitCli
   end # repository
 
 end
+
+# backward compatibility
+Gvcs::Vcs = GitCli::Vcs
+Gvcs::Workspace = GitCli::Workspace
+Gvcs::Repository = GitCli::Repository
+

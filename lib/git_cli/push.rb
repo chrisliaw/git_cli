@@ -15,11 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+require_relative 'branch'
 
 module GitCli
   module Push
+    include Branch
 
-    def push_changes(repos, branch = "master")
+    def push_changes(repos, branch = nil)
       check_vcs
       #check_repos
       raise_if_empty(repos, "Push to repository name cannot be empty", GitCliException)
@@ -33,6 +35,9 @@ module GitCli
       cmd << @vcs.exe_path
       cmd << "push"
       cmd << repos
+      if is_empty?(branch) 
+        branch = current_branch
+      end
       cmd << branch
 
       cmdln = cmd.join " "
@@ -44,7 +49,7 @@ module GitCli
     end # push_changes
     alias :push :push_changes
 
-    def push_changes_with_tags(repos, branch = "master")
+    def push_changes_with_tags(repos, branch = nil)
       check_vcs
       #check_repos
       raise_if_empty(repos, "Push to repository name cannot be empty", GitCliException)
@@ -58,6 +63,9 @@ module GitCli
       cmd << @vcs.exe_path
       cmd << "push"
       cmd << repos
+      if is_empty?(branch) 
+        branch = current_branch
+      end
       cmd << branch
       cmd << "--tags"
 

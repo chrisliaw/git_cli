@@ -24,9 +24,10 @@ module GitCli
     # due to various reason. i.e. urgent fix, hot patch etc
    
     # 
-    # Save all the temporary changes so branch switch is possible
+    # Save all changes so branch switch is possible
+    # Excluding untracked files
     #
-    def stash_changes(msg, include_untracked = true)
+    def stash_changes(msg)
 
       check_vcs
 
@@ -44,20 +45,59 @@ module GitCli
         cmd << msg2
       end
 
-      # always include untracked since the stash condition
-      # is played using scenario under development and must
-      # switch branch for any reasons
-      if include_untracked
-        cmd << "--include-untracked"
-      end
-
       cmdln = cmd.join(" ")
       log_debug "Stash changes : #{cmdln}"
       res = os_exec(cmdln) do |st, res|
         [st.success?, res]
       end
 
-    end # stash changes
+    end # stash changes - changed files only
+
+    # 
+    # Save all the temporary changes so the workspace will be clean
+    # for other operation
+    #
+    # This operation only stash: modified files (already in git workspace) 
+    # and new files (not in git workspace yet)
+    #
+    # If flag includes_ignore_file is true, include ignored file too
+    #
+    def stash_all_changes(msg, includes_ignore_file = false)
+
+      check_vcs
+
+      cmd = []
+      cmd << "cd"
+      cmd << @wsPath
+      cmd << "&&"
+      cmd << @vcs.exe_path
+      cmd << "stash"
+      cmd << "save"
+
+      if not_empty?(msg)
+        # have to escape the message for command line purposes
+        msg2 = msg.gsub("\"","\\\"").gsub("\\","\\\\")
+        cmd << msg2
+      end
+
+      cmd << "--include-untracked"
+
+      if includes_ignore_file == true
+        cmd << "--all"
+      end
+
+      cmdln = cmd.join(" ")
+      if includes_ignore_file
+        log_debug "Stash all changes (including untracked and ignored files) : #{cmdln}"
+      else
+        log_debug "Stash all changes (including untracked files) : #{cmdln}"
+      end
+      res = os_exec(cmdln) do |st, res|
+        [st.success?, res]
+      end
+
+    end # stash all changes - including untrack files
+
 
     #
     # List all saved temporary changes
@@ -162,7 +202,7 @@ module GitCli
       cmd << @wsPath
       cmd << "&&"
       cmd << @vcs.exe_path
-      cmd << "stash branch"
+      cmd << "stash"
       cmd << branch
 
       if not is_empty?(id)

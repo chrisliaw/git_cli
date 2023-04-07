@@ -23,7 +23,7 @@ require_relative 'global'
 module GitCli
   module Init
 
-    def init(path)
+    def init(path, bare = false)
       # from Core module
       gpath = exe_path 
 
@@ -32,6 +32,9 @@ module GitCli
       #cmd << "&&"
       cmd << gpath
       cmd << "init"
+      if bare
+        cmd << "--bare"
+      end
       cmd << File.expand_path(path)
      
       cmdln = cmd.join(" ")

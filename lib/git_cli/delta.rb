@@ -193,6 +193,12 @@ module GitCli
 
       end
     end # modified files
+    def modified
+      modified_files.reverse
+    end
+    def modFiles
+      modified.first
+    end
 
     def conflicted_files
       
@@ -229,6 +235,12 @@ module GitCli
 
       end
     end # conflicted files
+    def conflicted
+      conflicted_files.reverse
+    end
+    def cftFiles
+      conflicted.first
+    end
 
     def new_files
       
@@ -265,6 +277,9 @@ module GitCli
       end
 
     end # new_files
+    def newFiles
+      new_files.reverse.first
+    end
 
     def deleted_files
       
@@ -301,6 +316,12 @@ module GitCli
       end
      
     end # deleted_files
+    def deleted
+      deleted_files.reverse
+    end
+    def delFiles
+      deleted.first
+    end
 
     def staged_files
       
@@ -337,6 +358,12 @@ module GitCli
       end
 
     end # staged_files
+    def staged
+      staged_files.reverse
+    end
+    def stgFiles
+      staged.first
+    end
 
     def reset_file_changes(path)
 

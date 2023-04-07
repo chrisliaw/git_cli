@@ -40,12 +40,13 @@ module GitCli
           File.open(rulesFile,"r") do |f|
             @cont = f.read
           end
-          @cont
+          #@cont
+          @cont.each_line.to_a.delete_if { |l| l.strip.empty? }
         else
-          ""
+          []
         end
       else
-        ""
+        []
       end
     end
 

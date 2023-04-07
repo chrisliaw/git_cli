@@ -37,7 +37,7 @@ module GitCli
       res = os_exec(cmdln) do |st, res|
         
         if st.success?
-          res.strip
+          res.strip.each_line.to_a.map { |v| v.strip }
           #[true, res.strip!]
         else
           raise TagError, res
@@ -300,7 +300,10 @@ module GitCli
       cmd << @wsPath
       cmd << "&&"
       cmd << @vcs.exe_path
-      cmd << "push origin --delete"
+      cmd << "push"
+      cmd << repos
+      cmd << "--delete"
+      #cmd << "push origin --delete"
       cmd << tag
 
       cmdln = cmd.join(" ")
